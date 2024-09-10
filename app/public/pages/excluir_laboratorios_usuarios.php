@@ -29,12 +29,10 @@ if (!$isAdmin) {
 $laboratorios = [];
 $usuarios = [];
 
-// Carrega laboratórios
 $query = $bancoDados->prepare("SELECT id, nome FROM Laboratorio");
 $query->execute();
 $laboratorios = $query->fetchAll(PDO::FETCH_OBJ);
 
-// Carrega usuários
 $query = $bancoDados->prepare("SELECT id, nome FROM Pessoa");
 $query->execute();
 $usuarios = $query->fetchAll(PDO::FETCH_OBJ);
@@ -43,12 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['excluir_laboratorio'])) {
         $laboratorio_id = $_POST['laboratorio_id'];
 
-        // Exclui as reservas associadas ao laboratório
         $query = $bancoDados->prepare("DELETE FROM Reserva WHERE laboratorio_id = :id");
         $query->bindParam(':id', $laboratorio_id);
         $query->execute();
 
-        // Exclui o laboratório
         $query = $bancoDados->prepare("DELETE FROM Laboratorio WHERE id = :id");
         $query->bindParam(':id', $laboratorio_id);
         if ($query->execute()) {
@@ -59,12 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif (isset($_POST['excluir_usuario'])) {
         $usuario_id = $_POST['usuario_id'];
 
-        // Exclui as reservas associadas ao usuário
         $query = $bancoDados->prepare("DELETE FROM Reserva WHERE pessoa_id = :id");
         $query->bindParam(':id', $usuario_id);
         $query->execute();
 
-        // Exclui o usuário
         $query = $bancoDados->prepare("DELETE FROM Pessoa WHERE id = :id");
         $query->bindParam(':id', $usuario_id);
         if ($query->execute()) {

@@ -2,8 +2,7 @@
 $protegido = false;
 require_once('../../config/database.php');
 require_once('../../includes/session.inc.php');
-require_once('../../../vendor/autoload.php'); // Certifique-se de que o caminho do autoload está correto
-
+require_once('../../../vendor/autoload.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -17,7 +16,6 @@ $username = $usuario['nome'] ?? '';
 $userId = $usuario['id'] ?? '';
 $userEmail = $usuario['email'] ?? '';
 
-// Verifica se o usuário é administrador
 $isAdmin = false;
 $sql = "SELECT tipo FROM Pessoa WHERE id = :id";
 $stmt = $bancoDados->prepare($sql);
@@ -28,7 +26,7 @@ if ($stmt->rowCount() == 1) {
     $isAdmin = ($user['tipo'] === 'A');
 }
 
-// Consulta para recuperar laboratórios
+// Recuperar laboratórios
 $laboratorios = array();
 $query = $bancoDados->prepare("SELECT id, nome, numero_computadores FROM Laboratorio WHERE liberado = 1 ORDER BY nome");
 $query->execute();
@@ -36,7 +34,7 @@ if ($query->rowCount() > 0) {
     $laboratorios = $query->fetchAll(PDO::FETCH_OBJ);
 }
 
-// Consulta para recuperar usuários
+// Recupera usuários
 $usuarios = array();
 if ($isAdmin) {
     $query = $bancoDados->prepare("SELECT id, nome FROM Pessoa ORDER BY nome");
