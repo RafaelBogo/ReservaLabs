@@ -76,7 +76,21 @@ O sistema de Reserva de Laboratórios foi desenvolvido como parte de um trabalho
 2. **Visualizar Reservas de um Laboratório:**
    - Navegue até a página "Ver Reservas de Laboratório".
    - Selecione o laboratório desejado para ver todas as reservas.
+  
+### Exclusão de Usuários e Laboratórios (Administrador)
 
+**Excluir Laboratório:**
+
+   - Navegue até a página "Excluir" no menu de administração.
+   - Selecione um laboratório da lista.
+   - Clique em "Excluir Laboratório" para removê-lo do sistema.
+   - Isso também removerá todas as reservas associadas ao laboratório.
+     
+**Excluir Usuário:**
+
+   - Na mesma página "Excluir", selecione um usuário da lista.
+   - Clique em "Excluir Usuário" para removê-lo do sistema.
+   - Todas as reservas feitas por esse usuário também serão excluídas.
 ---
 
 ## Importação do Banco de Dados
