@@ -2,6 +2,10 @@
 $protegido = false;
 require_once('../../config/database.php');
 require_once('../../includes/session.inc.php');
+require_once('../../../vendor/autoload.php'); // Certifique-se de que o caminho do autoload está correto
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
@@ -69,13 +73,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reservar'])) {
         $query->bindParam(':descricao', $descricao);
 
         if ($query->execute()) {
-            header("Location: home.php");
-            exit;
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'rafaelbogo52@gmail.com';
+                $mail->Password = 'cyyfkwjqjntthlis';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+                $mail->CharSet = 'UTF-8';
+
+                $mail->setFrom('rafaelbogo52@gmail.com', 'Sistema de Reserva de Laboratórios');
+                $mail->addAddress($userEmail, $username);
+                $mail->isHTML(true);
+                $mail->Subject = 'Confirmação de Reserva de Laboratório';
+                $mail->Body = "
+                    <h1>Reserva Confirmada!</h1>
+                    <p><strong>Laboratório:</strong> {$laboratorio_id}</p>
+                    <p><strong>Data:</strong> {$data}</p>
+                    <p><strong>Hora de Início:</strong> {$hora_inicio}</p>
+                    <p><strong>Hora de Fim:</strong> {$hora_fim}</p>
+                    <p><strong>Descrição:</strong> {$descricao}</p>";
+
+                $mail->send();
+                header("Location: home.php");
+                exit;
+            } catch (Exception $e) {
+                $reservaErro = "Erro ao enviar o e-mail: {$mail->ErrorInfo}";
+            }
         } else {
             $reservaErro = "Erro ao realizar a reserva. Tente novamente.";
         }
     }
 }
+
+// Recupera as reservas recentes do usuário
+$sql = "SELECT r.id, r.data, r.hora_inicio, r.hora_fim, r.descricao, l.nome AS laboratorio 
+        FROM Reserva r 
+        JOIN Laboratorio l ON r.laboratorio_id = l.id 
+        WHERE r.pessoa_id = :pessoa_id 
+        ORDER BY r.data DESC, r.hora_inicio DESC 
+        LIMIT 5";
+$stmt = $bancoDados->prepare($sql);
+$stmt->bindParam(':pessoa_id', $userId);
+$stmt->execute();
+$reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -109,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reservar'])) {
                 </ul>
             </div>
         </nav>
+
         <div class="mt-4">
             <h2>Fazer uma Nova Reserva</h2>
             <form method="post" action="home.php">
@@ -160,20 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reservar'])) {
                 <?php endif; ?>
             </form>
         </div>
+
         <div class="mt-4">
             <h2>Reservas Recentes</h2>
-            <?php
-            $sql = "SELECT r.id, r.data, r.hora_inicio, r.hora_fim, r.descricao, l.nome AS laboratorio 
-                    FROM Reserva r 
-                    JOIN Laboratorio l ON r.laboratorio_id = l.id 
-                    WHERE r.pessoa_id = :pessoa_id 
-                    ORDER BY r.data DESC, r.hora_inicio DESC 
-                    LIMIT 5";
-            $stmt = $bancoDados->prepare($sql);
-            $stmt->bindParam(':pessoa_id', $userId);
-            $stmt->execute();
-            $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            ?>
             <?php if (!empty($reservas)): ?>
                 <ul class="list-group">
                     <?php foreach ($reservas as $reserva): ?>

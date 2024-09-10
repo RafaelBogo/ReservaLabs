@@ -29,15 +29,26 @@ if (!$isAdmin) {
 $laboratorios = [];
 $usuarios = [];
 
+// Carrega laboratórios
 $query = $bancoDados->prepare("SELECT id, nome FROM Laboratorio");
 $query->execute();
 $laboratorios = $query->fetchAll(PDO::FETCH_OBJ);
+
+// Carrega usuários
 $query = $bancoDados->prepare("SELECT id, nome FROM Pessoa");
 $query->execute();
 $usuarios = $query->fetchAll(PDO::FETCH_OBJ);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['excluir_laboratorio'])) {
         $laboratorio_id = $_POST['laboratorio_id'];
+
+        // Exclui as reservas associadas ao laboratório
+        $query = $bancoDados->prepare("DELETE FROM Reserva WHERE laboratorio_id = :id");
+        $query->bindParam(':id', $laboratorio_id);
+        $query->execute();
+
+        // Exclui o laboratório
         $query = $bancoDados->prepare("DELETE FROM Laboratorio WHERE id = :id");
         $query->bindParam(':id', $laboratorio_id);
         if ($query->execute()) {
@@ -47,6 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } elseif (isset($_POST['excluir_usuario'])) {
         $usuario_id = $_POST['usuario_id'];
+
+        // Exclui as reservas associadas ao usuário
+        $query = $bancoDados->prepare("DELETE FROM Reserva WHERE pessoa_id = :id");
+        $query->bindParam(':id', $usuario_id);
+        $query->execute();
+
+        // Exclui o usuário
         $query = $bancoDados->prepare("DELETE FROM Pessoa WHERE id = :id");
         $query->bindParam(':id', $usuario_id);
         if ($query->execute()) {
@@ -83,8 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if (isset($msg)): ?>
             <div class="alert alert-info"><?= htmlspecialchars($msg) ?></div>
         <?php endif; ?>
+
         <h2>Excluir Laboratório</h2>
-        <form method="post" action="excluir_laboratorio_usuario.php">
+        <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>">
             <div class="form-group">
                 <label for="laboratorio_id">Selecionar Laboratório</label>
                 <select class="form-control" id="laboratorio_id" name="laboratorio_id" required>
@@ -97,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
 
         <h2 class="mt-5">Excluir Usuário</h2>
-        <form method="post" action="excluir_laboratorio_usuario.php">
+        <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>">
             <div class="form-group">
                 <label for="usuario_id">Selecionar Usuário</label>
                 <select class="form-control" id="usuario_id" name="usuario_id" required>
