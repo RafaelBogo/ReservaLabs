@@ -25,8 +25,7 @@ if ($stmt->rowCount() == 1) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $isAdmin = ($user['tipo'] === 'A');
 }
-
-// Recuperar laboratórios
+// Laboratorios
 $laboratorios = array();
 $query = $bancoDados->prepare("SELECT id, nome, numero_computadores FROM Laboratorio WHERE liberado = 1 ORDER BY nome");
 $query->execute();
@@ -34,7 +33,7 @@ if ($query->rowCount() > 0) {
     $laboratorios = $query->fetchAll(PDO::FETCH_OBJ);
 }
 
-// Recupera usuários
+//Usuarios
 $usuarios = array();
 if ($isAdmin) {
     $query = $bancoDados->prepare("SELECT id, nome FROM Pessoa ORDER BY nome");
@@ -106,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reservar'])) {
     }
 }
 
-// Recupera as reservas recentes do usuário
+// Reservas recentes
 $sql = "SELECT r.id, r.data, r.hora_inicio, r.hora_fim, r.descricao, l.nome AS laboratorio 
         FROM Reserva r 
         JOIN Laboratorio l ON r.laboratorio_id = l.id 

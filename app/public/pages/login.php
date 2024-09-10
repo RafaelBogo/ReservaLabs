@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     'email' => $email
                 );
 
-                // Atualiza o ultimo login do usario
+                // Att o ultimo login do usuario
                 $updateQuery = $bancoDados->prepare("UPDATE Pessoa SET ultimo_login = NOW() WHERE id = :id");
                 $updateQuery->bindParam(':id', $row->id);
                 $updateQuery->execute();

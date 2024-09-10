@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'rafaelbogo52@gmail.com';
-                $mail->Password = 'cyyfkwjqjntthlis'; // Senha para o SMTP GMAIL
+                $mail->Password = 'cyyfkwjqjntthlis';
                 $mail->Port = 587;
                 $mail->CharSet = "UTF-8";
                 $mail->setFrom('rafaelbogo52@gmail.com', 'Reserva de Laboratórios');
