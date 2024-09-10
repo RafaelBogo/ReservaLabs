@@ -79,14 +79,14 @@ O sistema de Reserva de Laboratórios foi desenvolvido como parte de um trabalho
   
 ### Exclusão de Usuários e Laboratórios (Administrador)
 
-**Excluir Laboratório:**
+1. **Excluir Laboratório:**
 
    - Navegue até a página "Excluir" no menu de administração.
    - Selecione um laboratório da lista.
    - Clique em "Excluir Laboratório" para removê-lo do sistema.
    - Isso também removerá todas as reservas associadas ao laboratório.
      
-**Excluir Usuário:**
+2. **Excluir Usuário:**
 
    - Na mesma página "Excluir", selecione um usuário da lista.
    - Clique em "Excluir Usuário" para removê-lo do sistema.
