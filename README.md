@@ -91,7 +91,6 @@ O sistema de Reserva de Laboratórios foi desenvolvido como parte de um trabalho
    - Na mesma página "Excluir", selecione um usuário da lista.
    - Clique em "Excluir Usuário" para removê-lo do sistema.
    - Todas as reservas feitas por esse usuário também serão excluídas.
----
 
 ## Importação do Banco de Dados
 
